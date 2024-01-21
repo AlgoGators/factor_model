@@ -7,10 +7,10 @@ from factor import Factor
 class Contract:
     def __init__(self, symbol):
         self._symbol = symbol
-        self._closing_prices = self.set_closing_prices()
+        self._price_data = self.set_price_data()
         self._returns = self.set_returns()
 
-    def set_closing_prices(self) -> pd.DataFrame:
+    def set_price_data(self) -> pd.DataFrame:
         # Server and database information - *update driver as needed*
         driver = 'ODBC Driver 18 for SQL Server'
         server = 'algo.database.windows.net'
@@ -44,38 +44,41 @@ class Contract:
             return pd.DataFrame()
 
     def get_data(self):
-        return self._returns
+        return self._price_data
 
     def get_symbol(self):
         return self._symbol
 
     def set_returns(self):
-        self._closing_prices['Close'] = pd.to_numeric(self._closing_prices['Close'], errors='coerce')
+        self._price_data['Close'] = pd.to_numeric(self._price_data['Close'], errors='coerce')
 
-        if not self._closing_prices.empty:
+        if not self._price_data.empty:
             # Calculate daily returns using pct_change()
-            returns = self._closing_prices['Close'].pct_change()
+            returns = self._price_data['Close'].pct_change()
 
             # Create a new DataFrame for returns
-            returns_df = pd.DataFrame(index=self._closing_prices.index)
+            returns_df = pd.DataFrame(index=self._price_data.index)
             returns_df['Return'] = returns
             returns_df['1 + Return'] = returns + 1
 
             # Return the _returns attribute
             return returns_df.dropna()
         else:
-            print("DataFrame is empty.")
+            print(f"{self._symbol} DataFrame is empty.")
             return pd.DataFrame()
 
     def get_first_date(self):
-        return self._closing_prices.index[0]
+        print(self._price_data.index[0])
+        return self._price_data.index[0]
+
+    def get_last_date(self):
+        print(self._price_data.index[-1])
+        return self._price_data.index[-1]
 
     def get_returns(self):
         return self._returns
 
-
-test = Contract('ES')
-
-factor = Factor('^VIX', 'Volatility Risk', test.get_first_date())
-print(factor.get_returns())
-print(test.get_returns())
+# factor = Factor('^VIX', 'Volatility Risk', test.get_first_date(), test.get_last_date())
+# print(factor.get_returns())
+# pd.set_option('display.max_columns', None)
+# print(test.get_returns())

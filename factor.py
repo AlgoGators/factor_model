@@ -4,18 +4,17 @@ from datetime import datetime, timedelta
 
 
 class Factor:
-
-    def __init__(self, ticker, factor, start_date):
+    def __init__(self, ticker, factor, start_date, end_date):
         self._ticker = ticker
         self._factor = factor
         self._start_date = start_date
+        self._end_date = end_date
         self._price_data = self.set_price_data()
         self._returns = self.set_returns()
 
 
     def set_price_data(self) -> pd.DataFrame:
-        end_date = datetime.today()
-        data = yf.download(self._ticker, start=self._start_date, end=end_date)
+        data = yf.download(self._ticker, start=self._start_date, end=self._end_date)
         return data
 
     def set_returns(self):
@@ -38,9 +37,11 @@ class Factor:
 
 
     def get_closing_prices(self):
-        return self._price_data['Close']
+        return self._price_data
 
     def get_returns(self):
         return self._returns
 
 
+# factor = Factor('MSFT', 'trend', '2000-1-1', '2023-12-13')
+# print(factor.get_returns())
