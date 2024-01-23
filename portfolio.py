@@ -49,16 +49,16 @@ class Portfolio:
 
     def set_contracts(self):
         contracts = []
-        index = 3
+        # index = 3
         for symbol in self._symbol_list:
             num_contracts_held = self._num_contracts_held.get(symbol, 1)
             for _ in range(num_contracts_held):
                 contract = Contract(symbol)
                 contracts.append(contract)
                 print(f'Added {symbol} to portfolio.')
-            index -= 1
-            if index == 0:
-                break
+            # index -= 1
+            # if index == 0:
+            # break
         return contracts
 
     def set_contract_returns(self):
