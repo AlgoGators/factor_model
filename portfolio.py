@@ -5,6 +5,14 @@ from factor import Factor
 import os
 import glob
 
+list_of_symbols = ['6A', '6B', '6C', '6E', '6J', '6M', '6N', '6S', 'AFB', 'AWM', 'BAX', 'BRN', 'CGB', 'CL', 'CT', 'DC',
+                    'DX', 'ES', 'EUA', 'FBTP', 'FCE', 'FDAX', 'FESX', 'FGBL', 'FGBM', 'FGBS', 'FGBX', 'FSMI', 'FTDX',
+                    'GAS', 'GC', 'GD', 'GF', 'GWM', 'HE', 'HG', 'HO', 'HSI', 'HTW', 'KC', 'KE', 'KOS', 'LBS', 'LCC',
+                    'LEU', 'LE', 'LFT', 'LLG', 'LRC', 'LSU', 'LWB', 'MHI', 'MWE', 'NG', 'NIY', 'NKD', 'NQ', 'OJ', 'PA',
+                    'PL', 'RB', 'RS', 'RTY', 'SB', 'SCN', 'SI', 'SJB', 'SNK', 'SSG', 'SXF', 'UB', 'VX', 'WBS', 'YAP',
+                    'YIB', 'YIR', 'YM', 'YXT', 'YYT', 'ZB', 'ZC', 'ZF', 'ZL', 'ZM', 'ZN', 'ZO', 'ZQ', 'ZR', 'ZS',
+                    'ZT', 'ZW']
+
 
 class Portfolio:
     def __init__(self, symbol_list, num_contracts_held=None):
@@ -70,17 +78,9 @@ class Portfolio:
         return returns
 
 
-# Usage of the Portfolio class
-# Only using this base path to get list of symbols, can also do it by pulling the names from SQL tables - same for main
-# base_path = r'C:\Users\kbott\OneDrive\Desktop\AlgoData\OutputFile\Contract_Data
-# list_of_symbols = []
 """
-for file_name in os.listdir(base_path):
-    if file_name.endswith('_Data.csv'):  # This ensures only the relevant files are considered
-        symbol = file_name.replace('&', '').replace('_Data.csv', '')
-        list_of_symbols.append(symbol)
-
 # Instantiate Portfolio with equal weights by default
-test_port = Portfolio(list_of_symbols)
-print(test_port.get_returns())
+# test_port = Portfolio(list_of_symbols)
+# print(test_port.get_returns())
 """
+

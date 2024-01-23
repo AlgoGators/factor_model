@@ -1,5 +1,6 @@
 from factor import Factor
 from portfolio import Portfolio
+from portfolio import list_of_symbols
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
@@ -7,16 +8,6 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 import os
-
-# Set the base path for data files
-base_path = r'C:\Users\kbott\OneDrive\Desktop\AlgoData\OutputFile\Contract_Data'
-list_of_symbols = []
-
-# Load the symbols
-for file_name in os.listdir(base_path):
-    if file_name.endswith('_Data.csv'):
-        symbol = file_name.replace('&', '').replace('_Data.csv', '')
-        list_of_symbols.append(symbol)
 
 # Initialize Portfolio and Factor objects
 portfolio = Portfolio(list_of_symbols)
