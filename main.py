@@ -1,56 +1,41 @@
-from factor import Factor
-from portfolio import Portfolio
-from portfolio import list_of_symbols
 import pandas as pd
-from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
-import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
-import numpy as np
-import os
 
-# Initialize Portfolio and Factor objects
-portfolio = Portfolio(list_of_symbols)
-portfolio_returns = portfolio.get_returns()
+from contract_portfolio import ContractPortfolio
+from factor_portfolio import FactorPortfolio
+import portfolio_utils as utils
 
-vix_index = Factor('^VIX', 'Volatility Risk', portfolio_returns.index[0], portfolio_returns.index[-1])
-vix_returns = vix_index.get_returns()
 
-# Joining portfolio and VIX returns
-combined_data = portfolio_returns.join(vix_returns, how='inner', lsuffix='_portfolio', rsuffix='_vix')
+def main():
+    # Initialize Portfolio objects
+    contract_portfolio = ContractPortfolio()
+    portfolio_returns = contract_portfolio.get_returns()
 
-nan_rows = combined_data[combined_data.isnull().any(axis=1)]
-if not nan_rows.empty:
-    print(f'Rows with NaN values: {nan_rows}')
-    combined_data.dropna(inplace=True)
+    # Get returns from the portfolios
+    factor_portfolio = FactorPortfolio(portfolio_returns.index[0], portfolio_returns.index[-1])
+    factor_returns = factor_portfolio.get_returns()
 
-infinite_rows = combined_data[np.isinf(combined_data).any(axis=1)]
-if not infinite_rows.empty:
-    print(f'Rows with infinite values: {infinite_rows}')
-    combined_data.replace([np.inf, -np.inf], np.nan, inplace=True)
-    combined_data.dropna(inplace=True)
+    # Prepare and clean data
+    combined_returns = utils.prepare_data(portfolio_returns, factor_returns)
 
-X = combined_data[['Return_vix']]
-Y = combined_data['Return_portfolio']
+    # Define independent variable (features) and dependent variable
+    X = combined_returns[['Return_factor']]
+    Y = combined_returns['Return_portfolio']  
 
-model = LinearRegression()
-model.fit(X, Y)
+    # Standardize features
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
 
-# using the linear equation y = mx + b
-m = model.coef_[0]
-b = model.intercept_
+    # Perform grid search to find optimal alpha for Lasso and ElasticNet
+    lasso_params, elasticnet_params = utils.perform_grid_search(X_scaled, Y)
 
-plt.scatter(combined_data['Return_vix'], combined_data['Return_portfolio'], color='blue')
+    # Perform different regressions using the optimal alphas
+    models = utils.perform_different_regressions(X_scaled, Y, lasso_params['alpha'], elasticnet_params['alpha'])
 
-x_values = np.array([min(combined_data['Return_vix']), max(combined_data['Return_vix'])])
-y_values = m * x_values + b
-plt.plot(x_values, y_values, color='red')
+    # Plot results for each regression model
+    utils.plot_all_regression_results(X_scaled, Y, models)
 
-plt.xlabel('VIX Returns')
-plt.ylabel('Portfolio Returns')
-plt.title('Linear Regression between Portfolio and VIX Returns')
 
-equation = f'y = {m: .2f}x + {b: .2f}'
-plt.text(0.5, 0.9, equation, ha='center', va='center', transform=plt.gca().transAxes, color='red')
-
-plt.show()
+if __name__ == "__main__":
+    main()

@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sqlalchemy import create_engine
 import urllib
 from factor import Factor
@@ -38,6 +39,23 @@ class Contract:
                 contract_df = pd.read_sql(table_query, engine)
                 contract_df['Date'] = pd.to_datetime(contract_df['Date'])
                 contract_df.set_index('Date', inplace=True)
+
+                # Check for NaN values
+                nan_rows = contract_df[contract_df.isnull().any(axis=1)]
+                if not nan_rows.empty:
+                    print(f'Symbol {self._symbol} has these rows with NaN values: {nan_rows}')
+                    contract_df.dropna(inplace=True)
+
+                # Ensure all data is numeric before checking for infinite values
+                contract_df = contract_df.apply(pd.to_numeric, errors='coerce')
+
+                # Now it's safe to check for infinite values
+                infinite_rows = contract_df[np.isinf(contract_df).any(axis=1)]
+
+                if not infinite_rows.empty:
+                    print(f'Rows with infinite values: {infinite_rows}')
+                    contract_df.replace([np.inf, -np.inf], np.nan, inplace=True)
+                    contract_df.dropna(inplace=True)
                 return contract_df
         else:
             # Return an empty DataFrame if no data was found
