@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from factor_model.portfolio import Portfolio  # Assuming the abstract base class is in portfolio.py
+from portfolio import Portfolio  # Assuming the abstract base class is in portfolio.py
 from contract import Contract  # Assuming the Contract class is defined in contract.py
 
 contract_symbols = ['6A', '6C', '6S', 'KC', 'HG', 'ZC', 'CT', '6E', 'GF', 'FCE', 'SCN', '6B', 'GC', 'KE',

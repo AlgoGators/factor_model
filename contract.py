@@ -3,6 +3,7 @@ import numpy as np
 from sqlalchemy import create_engine
 import urllib
 from factor import Factor
+from percent_change import get_df_percent_change
 
 
 class Contract:
@@ -68,11 +69,11 @@ class Contract:
         return self._symbol
 
     def set_returns(self):
-        self._price_data['Close'] = pd.to_numeric(self._price_data['Close'], errors='coerce')
+        self._price_data['Unadj_Close'] = pd.to_numeric(self._price_data['Unadj_Close'], errors='coerce')
 
         if not self._price_data.empty:
-            # Calculate daily returns using pct_change()
-            returns = self._price_data['Close'].pct_change()
+            # Calculate daily returns using new function
+            returns = get_df_percent_change(self._price_data[['Unadj_Close', 'Delivery Month']])
 
             # Create a new DataFrame for returns
             returns_df = pd.DataFrame(index=self._price_data.index)
