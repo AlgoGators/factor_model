@@ -1,5 +1,5 @@
 import pandas as pd
-from factor_model.portfolio import Portfolio  # Assuming the abstract base class is in portfolio.py
+from portfolio import Portfolio  # Assuming the abstract base class is in portfolio.py
 from factor import Factor  # Assuming the Factor class is defined in factor.py
 
 
