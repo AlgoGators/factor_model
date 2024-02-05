@@ -57,20 +57,29 @@ def perform_different_regressions(X, Y, lasso_alpha, elasticnet_alpha):
 
 
 def plot_regression_results(ax, X, Y, model, model_name):
-    """Plot the results of the regression on a given axes."""
-    x_values = np.array([X.min(), X.max()])
-    y_values = model.coef_[0] * x_values + model.intercept_
-    ax.scatter(X, Y, color='blue')
-    ax.plot(x_values, y_values, color='red')
+    """Plot the results of the regression for models with multiple independent variables."""
+    # Predicted vs. actual values
+    Y_pred = model.predict(X)
+    ax.scatter(Y, Y_pred, color='blue')  # Actual vs. Predicted scatter plot
+    ax.plot([Y.min(), Y.max()], [Y.min(), Y.max()], 'k--', lw=4, color='red')  # Diagonal line for reference
     ax.set_title(f'{model_name} Regression')
-    ax.set_xlabel('Factor Returns')
-    ax.set_ylabel('Portfolio Returns')
+    ax.set_xlabel('Actual Portfolio Returns')
+    ax.set_ylabel('Predicted Portfolio Returns')
 
-    # Calculate and display the equation and adjusted R-squared
-    adjusted_r_squared = calculate_adjusted_r_squared(Y, model.predict(X.reshape(-1, 1)), X)
-    equation = f'y = {model.coef_[0]: .4f}x + {model.intercept_: .4f}'
-    ax.text(0.95, 0.05, f'{equation}\nAdj. R-squared: {adjusted_r_squared: .4f}',
-            ha='right', va='bottom', transform=ax.transAxes, fontsize=9, color='black')
+    # Calculate and display the adjusted R-squared
+    adjusted_r_squared = calculate_adjusted_r_squared(Y, Y_pred, X.shape[1])  # Update the calculation if necessary
+    ax.text(0.05, 0.95, f'Adj. R-squared: {adjusted_r_squared: .4f}',
+            ha='left', va='top', transform=ax.transAxes, fontsize=9, color='black')
+
+    # Display model coefficients in tabular format
+    coefs_table = '\n'.join([f'$\\beta_{{{i+1}}}$: {coef:.4f}' for i, coef in enumerate(model.coef_)])
+    props = dict(boxstyle='round', facecolor='white', alpha=0.5)
+    ax.text(0.05, 0.90, coefs_table, transform=ax.transAxes, fontsize=9,
+            verticalalignment='top', bbox=props)
+
+    # Optionally, adjust the limits if necessary to prevent overlap
+    ax.set_xlim(left=min(Y.min(), Y_pred.min()), right=max(Y.max(), Y_pred.max()))
+    ax.set_ylim(bottom=min(Y.min(), Y_pred.min()), top=max(Y.max(), Y_pred.max()))
 
 
 def plot_all_regression_results(X, Y, models):

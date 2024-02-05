@@ -1,6 +1,7 @@
 import pandas as pd
 
-def get_percent_change(a : float, b : float) -> float:
+
+def get_percent_change(a: float, b: float) -> float:
     """
     Calculates the percentage change between two numbers. a is the initial value and b is the final value.
     
@@ -13,18 +14,18 @@ def get_percent_change(a : float, b : float) -> float:
     A float representing the percentage change
     """
 
-    if (a == 0):
+    if a == 0:
         return None
 
-    if (a > 0):
-        return ((b - a) / a)
-    
-    return ((b - a) / -a)
+    if a > 0:
+        return (b - a) / a
+
+    return (b - a) / -a
 
 
 def get_column_percent_change(
-        df : pd.DataFrame, 
-        column : str = "Unadj_Close") -> pd.DataFrame:
+        df: pd.DataFrame,
+        column: str = "Unadj_Close") -> pd.DataFrame:
     """
     Calculates the percentage change for adjusted prices. 
 
@@ -41,7 +42,7 @@ def get_column_percent_change(
     percent_changes = []
 
     for i in range(1, len(df)):
-        percent_changes.append(get_percent_change(df.iloc[i-1][column], df.iloc[i][column]))
+        percent_changes.append(get_percent_change(df.iloc[i - 1][column], df.iloc[i][column]))
 
     percent_change_df = pd.DataFrame(percent_changes, columns=["Percent Change"])
     percent_change_df["Date"] = dates
@@ -49,10 +50,11 @@ def get_column_percent_change(
 
     return percent_change_df
 
+
 def get_df_percent_change(
-        df : pd.DataFrame,
-        unadj_column : str = "Unadj_Close",
-        delivery_column : str = "Delivery Month"):
+        df: pd.DataFrame,
+        unadj_column: str = "Unadj_Close",
+        delivery_column: str = "Delivery Month"):
     """
     Calculates the percentage change for unadjusted prices; note this will not look at % change
     between delivery months, but rather the % change within the same delivery month. 
@@ -71,9 +73,9 @@ def get_df_percent_change(
     """
 
     # creates a set of unique delivery months
-    delivery_months : set = set(df[delivery_column].tolist())
+    delivery_months: set = set(df[delivery_column].tolist())
     # converts back to list for iterating
-    delivery_months : list = list(delivery_months)
+    delivery_months: list = list(delivery_months)
     delivery_months.sort()
 
     percent_returns = pd.DataFrame()
@@ -85,9 +87,3 @@ def get_df_percent_change(
         percent_returns = pd.concat([percent_returns, delivery_month_returns])
 
     return percent_returns
-
-if __name__ == '__main__':
-    df = pd.read_csv('ES_DATA.csv')
-    percent_returns = get_df_percent_change(df)
-
-    print(percent_returns)

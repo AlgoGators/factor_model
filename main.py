@@ -3,7 +3,7 @@ from sklearn.metrics import r2_score
 from sklearn.preprocessing import StandardScaler
 
 from contract_portfolio import ContractPortfolio
-from factor_portfolio import FactorPortfolio
+from factor_portfolio import FactorPortfolio, factor_symbols
 import portfolio_utils as utils
 
 
@@ -19,9 +19,11 @@ def main():
     # Prepare and clean data
     combined_returns = utils.prepare_data(portfolio_returns, factor_returns)
 
+    print(combined_returns.head())
+
     # Define independent variable (features) and dependent variable
-    X = combined_returns[['Return_factor']]
-    Y = combined_returns['Return_portfolio']  
+    X = combined_returns[[factor_name for factor_name in factor_symbols.values()]]
+    Y = combined_returns['Portfolio Return']
 
     # Standardize features
     scaler = StandardScaler()

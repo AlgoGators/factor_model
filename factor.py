@@ -4,8 +4,9 @@ from datetime import datetime, timedelta
 
 
 class Factor:
-    def __init__(self, ticker, start_date, end_date):
+    def __init__(self, ticker, factor_name, start_date, end_date):
         self._ticker = ticker
+        self._factor_name = factor_name
         self._start_date = start_date
         self._end_date = end_date
         self._price_data = self.set_price_data()
@@ -43,6 +44,9 @@ class Factor:
 
     def get_ticker(self):
         return self._ticker
+
+    def get_factor_name(self):
+        return self._factor_name
 
 # factor = Factor('MSFT', '2000-1-1', '2023-12-13')
 # print(factor.get_returns())

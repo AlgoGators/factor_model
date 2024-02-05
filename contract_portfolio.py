@@ -24,12 +24,12 @@ class ContractPortfolio(Portfolio):
             # Retrieve the number of contracts held for the symbol; default is 1
             num_contracts_held = self._holdings.get(symbol, 1)
             # Create and add Contract objects to the list
-            # index += 1
+            index += 1
             for _ in range(num_contracts_held):
                 contracts.append(Contract(symbol))
-                print(f"Contract {symbol} added to the portfolio.")
-            # if index == 3:
-            # break
+                print(f"Contract {index} / {len(contract_symbols)} ({symbol}) added to the portfolio.")
+            if index == 3:
+                break
         return contracts
 
     def aggregate_returns(self):
@@ -62,8 +62,7 @@ class ContractPortfolio(Portfolio):
 
         # Create portfolio DataFrame
         portfolio_df = pd.DataFrame(index=all_returns.index)
-        portfolio_df['1 + Return'] = portfolio_1_plus_return
-        portfolio_df['Return'] = portfolio_1_plus_return - 1
+        portfolio_df['Portfolio Return'] = portfolio_1_plus_return - 1
 
         return portfolio_df.dropna()
 
