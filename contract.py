@@ -14,7 +14,7 @@ config_data: Dict[str, Any] = toml.load(r'config.toml')
 
 # Setup PostgreSQL database parameters from the configuration data for later connection.
 DB_PARAMS: Dict[str, Any] = {
-    'dbname': config_data['database']['db_ng_trend'],
+    'dbname': config_data['database']['db_trend'],
     'user': config_data['database']['user'],
     'password': config_data['database']['password'],
     'host': config_data['server']['ip'],
