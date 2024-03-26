@@ -28,8 +28,9 @@ class ContractPortfolio(Portfolio):
             for _ in range(num_contracts_held):
                 contracts.append(Contract(symbol))
                 print(f"Contract {index} / {len(contract_symbols)} ({symbol}) added to the portfolio.")
-            if index == 3:
+            if index == 5:
                 break
+                # pass
         return contracts
 
     def aggregate_returns(self):
@@ -48,21 +49,23 @@ class ContractPortfolio(Portfolio):
             contract_returns_df.replace([np.inf, -np.inf], np.nan, inplace=True)
             contract_returns_df.dropna(inplace=True)
 
-            # Verify the '1 + Return' column exists
+            # Convert index to Datetime object with a standard format
+            contract_returns_df.index = pd.to_datetime(contract_returns_df.index)
+
             if '1 + Return' in contract_returns_df.columns:
-                one_plus_return_cols.append(contract_returns_df['1 + Return'])
+                one_plus_return_cols.append(contract_returns_df[['1 + Return']])
             else:
-                print(f"Contract {contract.get_symbol()} DataFrame missing '1 + Return' column.")
+                raise ValueError(f"Contract {contract.get_symbol()} DataFrame missing '1 + Return' column.")
 
         # Concatenate all '1 + Return' columns along the column axis using inner join
-        all_returns = pd.concat(one_plus_return_cols, axis=1, join='inner')
+        all_returns = pd.concat(one_plus_return_cols, axis=1, join='outer')
+        all_returns.dropna(inplace=True)
 
-        # Calculate the product of '1 + Return' across all contracts (row-wise)
-        portfolio_1_plus_return = all_returns.prod(axis=1, skipna=False)
+        portfolio_return = all_returns.prod(axis=1, skipna=False)
+        portfolio_return = np.power(portfolio_return, 1 / len(all_returns.columns)) - 1
 
-        # Create portfolio DataFrame
         portfolio_df = pd.DataFrame(index=all_returns.index)
-        portfolio_df['Portfolio Return'] = portfolio_1_plus_return - 1
+        portfolio_df['Portfolio Return'] = portfolio_return
 
         return portfolio_df.dropna()
 

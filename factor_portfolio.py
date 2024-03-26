@@ -1,7 +1,6 @@
 import pandas as pd
-from portfolio import Portfolio  # Assuming the abstract base class is in portfolio.py
-from factor import Factor  # Assuming the Factor class is defined in factor.py
-
+from portfolio import Portfolio
+from factor import Factor
 
 factor_symbols = {'^VIX': 'Volatility Risk',
                   '^TNX': 'Interest Rate Risk',
@@ -27,17 +26,15 @@ class FactorPortfolio(Portfolio):
         print(f"FactorPortfolio initialized with start date: {start_date} and end date: {end_date}")
         super().__init__(factor_symbols.keys(), holdings)
 
-
-
     def initialize_components(self):
         """
         Initialize Factor objects for each symbol in the portfolio.
 
         :return: A list of Factor objects
         """
-        factors = [Factor(symbol, factor_name, self._start_date, self._end_date) for symbol, factor_name in factor_symbols.items()]
+        factors = [Factor(symbol, factor_name, self._start_date, self._end_date) for symbol, factor_name in
+                   factor_symbols.items()]
         return factors
-
 
     def aggregate_returns(self):
         """
@@ -59,13 +56,13 @@ class FactorPortfolio(Portfolio):
             else:
                 print(f"Factor {factor.get_factor_name()} DataFrame missing 'Return' column.")
 
-
         # Concatenate all '1 + Return' columns along the column axis using inner join
         all_returns = pd.concat(one_plus_return_cols, axis=1, join='inner')
 
         return all_returns.dropna()
 
+
 # Example usage:
 # Assuming list_of_symbols is a list of factor tickers
-# factor_portfolio = FactorPortfolio(list_of_symbols)
+# factor_portfolio = FactorPortfolio('2000-1-1', '2023-12-13')
 # print(factor_portfolio.get_returns())

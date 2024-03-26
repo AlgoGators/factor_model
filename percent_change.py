@@ -53,8 +53,8 @@ def get_column_percent_change(
 
 def get_df_percent_change(
         df: pd.DataFrame,
-        unadj_column: str = "Unadj_Close",
-        delivery_column: str = "Delivery Month"):
+        unadj_column: int = 6,
+        delivery_column: int = 12):
     """
     Calculates the percentage change for unadjusted prices; note this will not look at % change
     between delivery months, but rather the % change within the same delivery month. 

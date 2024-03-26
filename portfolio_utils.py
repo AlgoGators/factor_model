@@ -31,7 +31,7 @@ def perform_grid_search(X, Y):
     """Perform grid search to find optimal alpha for Lasso and ElasticNet"""
     lasso = Lasso(max_iter=10000, random_state=42)
     elasticnet = ElasticNet(max_iter=10000, random_state=42)
-    parameters = {'alpha': [1e-4, 1e-3, 1e-2, 1e-1, 1, 10, 100]}
+    parameters = {'alpha': [1e-4, 1e-3, 1e-2, 1e-1, 1, 10, 100, 1000]}
 
     lasso_regressor = GridSearchCV(lasso, parameters, scoring='r2', cv=5)
     elasticnet_regressor = GridSearchCV(elasticnet, parameters, scoring='r2', cv=5)

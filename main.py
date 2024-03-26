@@ -19,8 +19,6 @@ def main():
     # Prepare and clean data
     combined_returns = utils.prepare_data(portfolio_returns, factor_returns)
 
-    print(combined_returns.head())
-
     # Define independent variable (features) and dependent variable
     X = combined_returns[[factor_name for factor_name in factor_symbols.values()]]
     Y = combined_returns['Portfolio Return']

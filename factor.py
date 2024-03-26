@@ -12,7 +12,6 @@ class Factor:
         self._price_data = self.set_price_data()
         self._returns = self.set_returns()
 
-
     def set_price_data(self) -> pd.DataFrame:
         data = yf.download(self._ticker, start=self._start_date, end=self._end_date)
         return data
@@ -35,7 +34,6 @@ class Factor:
             print("DataFrame is empty.")
             return pd.DataFrame()
 
-
     def get_closing_prices(self):
         return self._price_data
 
@@ -48,5 +46,5 @@ class Factor:
     def get_factor_name(self):
         return self._factor_name
 
-# factor = Factor('MSFT', '2000-1-1', '2023-12-13')
+# factor = Factor('MSFT', 'test', '2000-1-1', '2023-12-13')
 # print(factor.get_returns())
