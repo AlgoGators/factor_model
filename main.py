@@ -12,6 +12,11 @@ def main():
     contract_portfolio = ContractPortfolio()
     portfolio_returns = contract_portfolio.get_returns()
 
+    percentile_95 = portfolio_returns['Portfolio Return'].quantile(0.95)
+    percentile_5 = portfolio_returns['Portfolio Return'].quantile(0.05)
+    portfolio_returns = portfolio_returns[(portfolio_returns['Portfolio Return'] < percentile_95) &
+                                          (portfolio_returns['Portfolio Return'] > percentile_5)]
+
     # Get returns from the portfolios
     factor_portfolio = FactorPortfolio(portfolio_returns.index[0], portfolio_returns.index[-1])
     factor_returns = factor_portfolio.get_returns()
@@ -22,10 +27,6 @@ def main():
     # Define independent variable (features) and dependent variable
     X = combined_returns[[factor_name for factor_name in factor_symbols.values()]]
     Y = combined_returns['Portfolio Return']
-
-    # Standardize features
-    # scaler = StandardScaler()
-    # X_scaled = scaler.fit_transform(X)
 
     # Perform grid search to find optimal alpha for Lasso and ElasticNet
     lasso_params, elasticnet_params = utils.perform_grid_search(X, Y)

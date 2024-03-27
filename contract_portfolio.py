@@ -29,7 +29,8 @@ class ContractPortfolio(Portfolio):
                 contracts.append(Contract(symbol))
                 print(f"Contract {index} / {len(contract_symbols)} ({symbol}) added to the portfolio.")
             if index == 5:
-                break
+                pass
+                # break
         return contracts
 
     def aggregate_returns(self):
@@ -56,7 +57,7 @@ class ContractPortfolio(Portfolio):
             else:
                 raise ValueError(f"Contract {contract.get_symbol()} DataFrame missing '1 + Return' column.")
 
-        # Concatenate all '1 + Return' columns along the column axis using inner join
+        # Concatenate all '1 + Return' columns along the column axis using outer join
         all_one_plus_return_cols = pd.concat(one_plus_return_cols, axis=1, join='outer')
         all_one_plus_return_cols.dropna(inplace=True)
 
