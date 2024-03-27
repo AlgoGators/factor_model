@@ -24,17 +24,17 @@ def main():
     Y = combined_returns['Portfolio Return']
 
     # Standardize features
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+    # scaler = StandardScaler()
+    # X_scaled = scaler.fit_transform(X)
 
     # Perform grid search to find optimal alpha for Lasso and ElasticNet
-    lasso_params, elasticnet_params = utils.perform_grid_search(X_scaled, Y)
+    lasso_params, elasticnet_params = utils.perform_grid_search(X, Y)
 
     # Perform different regressions using the optimal alphas
-    models = utils.perform_different_regressions(X_scaled, Y, lasso_params['alpha'], elasticnet_params['alpha'])
+    models = utils.perform_different_regressions(X, Y, lasso_params['alpha'], elasticnet_params['alpha'])
 
     # Plot results for each regression model
-    utils.plot_all_regression_results(X_scaled, Y, models)
+    utils.plot_all_regression_results(X, Y, models)
 
 
 if __name__ == "__main__":

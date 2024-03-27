@@ -30,7 +30,6 @@ class ContractPortfolio(Portfolio):
                 print(f"Contract {index} / {len(contract_symbols)} ({symbol}) added to the portfolio.")
             if index == 5:
                 break
-                # pass
         return contracts
 
     def aggregate_returns(self):
@@ -58,16 +57,15 @@ class ContractPortfolio(Portfolio):
                 raise ValueError(f"Contract {contract.get_symbol()} DataFrame missing '1 + Return' column.")
 
         # Concatenate all '1 + Return' columns along the column axis using inner join
-        all_returns = pd.concat(one_plus_return_cols, axis=1, join='outer')
-        all_returns.dropna(inplace=True)
+        all_one_plus_return_cols = pd.concat(one_plus_return_cols, axis=1, join='outer')
+        all_one_plus_return_cols.dropna(inplace=True)
 
-        portfolio_return = all_returns.prod(axis=1, skipna=False)
-        portfolio_return = np.power(portfolio_return, 1 / len(all_returns.columns)) - 1
+        one_plus_portfolio_return = all_one_plus_return_cols.prod(axis=1, skipna=False)
 
-        portfolio_df = pd.DataFrame(index=all_returns.index)
-        portfolio_df['Portfolio Return'] = portfolio_return
+        portfolio_return_df = pd.DataFrame(index=all_one_plus_return_cols.index)
+        portfolio_return_df['Portfolio Return'] = one_plus_portfolio_return - 1
 
-        return portfolio_df.dropna()
+        return portfolio_return_df.dropna()
 
 # Example usage:
 # Assuming list_of_symbols is a list of contract symbols
