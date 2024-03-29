@@ -29,8 +29,8 @@ class ContractPortfolio(Portfolio):
                 contracts.append(Contract(symbol))
                 print(f"Contract {index} / {len(contract_symbols)} ({symbol}) added to the portfolio.")
             if index == 5:
-                pass
-                # break
+                # pass
+                break
         return contracts
 
     def aggregate_returns(self):
