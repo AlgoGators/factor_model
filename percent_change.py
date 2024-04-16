@@ -53,7 +53,7 @@ def get_column_percent_change(
 
 def get_df_percent_change(
         df: pd.DataFrame,
-        unadj_column: int = 6,
+        unadj_column: int = 11,
         delivery_column: int = 12):
     """
     Calculates the percentage change for unadjusted prices; note this will not look at % change

@@ -2,10 +2,6 @@ import pandas as pd
 import psycopg2
 import toml
 from typing import Dict, Any
-import numpy as np
-from sqlalchemy import create_engine
-import urllib
-from factor import Factor
 from percent_change import get_df_percent_change
 from psycopg2.extensions import connection as PGConnection
 from psycopg2 import sql
@@ -27,7 +23,7 @@ def fetch_symbol_dict() -> Dict[str, str]:
     path_to_csv: str = r'contracts.csv'
     # Load the CSV file into a pandas DataFrame.
     df: pd.DataFrame = pd.read_csv(path_to_csv)
-    # Convert the DataFrame into a dictionary with 'Data Symbol' as keys and 'Data Set' as values for easy lookup.
+    # Convert the DataFrame into a dictionary with 'Data Symbol' as keys and 'Data Set' as values.
     symbol_dict: Dict[str, str] = df.set_index('Data Symbol')['Data Set'].to_dict()
 
     return symbol_dict
@@ -87,11 +83,11 @@ class Contract:
         return self._symbol
 
     def set_returns(self):
-        self._price_data[6] = pd.to_numeric(self._price_data[6], errors='coerce')
+        self._price_data[11] = pd.to_numeric(self._price_data[11], errors='coerce')
 
         if not self._price_data.empty:
             # Calculate daily returns using new function
-            returns = get_df_percent_change(self._price_data[[6, 12]]).dropna()
+            returns = get_df_percent_change(self._price_data[[11, 12]]).dropna()
             returns.set_index(self._price_data[0][:len(returns)], inplace=True)
 
             # Create a new DataFrame for returns
@@ -115,8 +111,3 @@ class Contract:
 
     def get_returns(self):
         return self._returns
-
-# factor = Factor('^VIX', 'Volatility Risk', test.get_first_date(), test.get_last_date())
-# print(factor.get_returns())
-# pd.set_option('display.max_columns', None)
-# print(test.get_returns())

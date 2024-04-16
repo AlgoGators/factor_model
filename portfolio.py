@@ -1,17 +1,28 @@
 from abc import ABC, abstractmethod
-import pandas as pd
+from datetime import datetime, timedelta
 
 
 class Portfolio(ABC):
-    def __init__(self, symbol_list, holdings=None):
+    def __init__(self, symbol_list, weighting=None, start_date=None, end_date=None):
         """
         Initialize a Portfolio with a list of symbols and optional holdings.
 
         :param symbol_list: List of symbol identifiers for the portfolio components
-        :param holdings: Dictionary mapping symbols to the number of units held
+        :param weighting: Dictionary mapping symbols to the number of units held
+        :param start_date: The start date for the portfolio's returns
+        :param end_date: The end date for the portfolio's returns
         """
         self._symbol_list = symbol_list
-        self._holdings = holdings if holdings is not None else {symbol: 1 for symbol in symbol_list}
+        self._weighting = weighting if weighting is not None else {symbol: 1 for symbol in symbol_list}
+
+        if start_date is None:
+            start_date = datetime.today() - timedelta(days=10 * 365)
+        if end_date is None:
+            end_date = datetime.today()
+
+        self._start_date = start_date
+        self._end_date = end_date
+
         self._components = self.initialize_components()
         self._returns = self.aggregate_returns()
 

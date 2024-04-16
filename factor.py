@@ -1,6 +1,5 @@
 import pandas as pd
 import yfinance as yf
-from datetime import datetime, timedelta
 
 
 class Factor:
@@ -13,10 +12,12 @@ class Factor:
         self._returns = self.set_returns()
 
     def set_price_data(self) -> pd.DataFrame:
+        """ Retrieve historical price data for the factor. """
         data = yf.download(self._ticker, start=self._start_date, end=self._end_date)
         return data
 
     def set_returns(self):
+        """ Calculate returns for the factor. """
         self._price_data['Close'] = pd.to_numeric(self._price_data['Close'], errors='coerce')
 
         if not self._price_data.empty:
@@ -45,6 +46,3 @@ class Factor:
 
     def get_factor_name(self):
         return self._factor_name
-
-# factor = Factor('MSFT', 'test', '2000-1-1', '2023-12-13')
-# print(factor.get_returns())
